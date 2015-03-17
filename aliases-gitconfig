@@ -1,0 +1,6 @@
+[alias]
+    branch-current = !git rev-parse --abbrev-ref HEAD
+    branch-upstream = !git rev-parse --abbrev-ref @{u}
+    branch-issue = "!.git/hooks/branch-config-key.py issue"
+    branch-commitprefix = "!.git/hooks/branch-config-key.py commitprefix"
+#    review-diff-trunk = "!.git/hooks/review-diff-trunk.sh"

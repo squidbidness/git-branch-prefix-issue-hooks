@@ -1,0 +1,70 @@
+#!/usr/local/bin/python
+
+# TODO: augment to detect whether the prefix and/or issue are already in the
+# commit message (for example, in the case of amending a prior commit already
+# treated by this hook).
+
+from __future__ import print_function
+from hooks_common import *
+
+def build_commit_message(original_raw, feature_name, issue, warnings):
+
+    lines = original_raw.splitlines()
+    original = "\n".join([l for l in lines if not l.strip().startswith("#")])
+    comments = "\n".join([l for l in lines if l.strip().startswith("#")])
+
+    prefix_string = "({0}) ".format(feature_name)
+    issue_string = "\n{0}".format(issue)
+
+    message = ""
+    if feature_name != None and not original.startswith(prefix_string):
+        message += prefix_string
+    message += original + "\n"
+    if issue != None and not original.endswith(issue_string):
+        message += issue_string + "\n"
+    for w in warnings:
+        message += "# " + w.replace("\n", "\n# ") + "\n# \n"
+    message += comments + "\n"
+    return message
+
+# Don't alter '--amend' messages, merges, cherry-picks
+if len(sys.argv) > 2 and ( (sys.argv[2] == "commit")
+                           or (sys.argv[2] == "merge")
+                           or (sys.argv[2] == "squash") ) :
+    exit()
+
+message_filename = sys.argv[1]
+is_command_line_message = ((len(sys.argv) > 2) and (sys.argv[2] == "message"))
+
+branch = get_current_branch()
+
+if not is_excluded_branch(branch):
+
+    keys = config_keys()
+    warnings = []
+    values = {key : None for key in keys}
+    
+    for key in keys:
+
+        if has_branch_config(branch, key):
+            values[key] = get_branch_config(branch, key)
+        else:
+            warning = no_config_warning(branch, key)
+            if is_command_line_message:
+                print(warning, file=sys.stderr)
+                print("\n")
+            else:
+                warnings.append(warning)
+
+    original_message = ""
+    with open(message_filename, "r") as f:
+        original_message = f.read()
+
+    message = build_commit_message( original_message,
+                                    values["commitprefix"],
+                                    values["issue"],
+                                    warnings)
+
+    with open(message_filename, "w") as f:
+        f.write(message)
+

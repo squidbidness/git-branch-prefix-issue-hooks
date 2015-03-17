@@ -1,0 +1,33 @@
+#!/usr/local/bin/python
+
+from __future__ import print_function
+from hooks_common import *
+
+branch = get_current_branch()
+
+if not is_excluded_branch(branch) :
+
+    for key in config_keys():
+
+        if do_not_warn_branch_config(branch, key):
+            continue
+        
+        success = False
+        if not has_branch_config(branch, key):
+            if not is_root_feature_branch(branch):
+                parent = get_parent_branch(branch)
+                if has_branch_config(parent, key):
+                    parent_value = get_branch_config(parent, key)
+                    print( "Inheriting git config '{config_key}' value "
+                           "'{config_value}' from tracking branch "
+                           "'{parent_branch}'."
+                           .format( config_key=key,
+                                    config_value=parent_value,
+                                    parent_branch=parent ) )
+                    #print( "set_branch_config({0}, {1}, {2})"
+                    #       .format(branch, key, parent_issue))
+                    set_branch_config(branch, key, parent_value)
+                    success = True
+            if not success:
+                print ("{0}\n".format(no_config_warning(branch, key)))
+
