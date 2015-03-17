@@ -3,6 +3,8 @@ git-prefix-issue-hooks
 
 Hooks and scripts for automatically preparing commit messages with a feature prefix and an issue number from the local branch config.
 
+Place the files in your working directory's .git/hooks sub-directory.  You can do this by cloning the repository directly into that directory, then updates can be installed automatically with 'git pull origin master'.
+
 Requires a python installation; assumes the binary is located at /usr/bin/python'
 
 There are two core git config keys used in these hooks: 'commitprefix' and 'issue'.  'commitprefix' should be a short name to identify the feature or branch with which a commit should be associated.  These are configured per-branch using 'git config branch.<branch_name>.(commitprefix|issue).  When 'commitprefix' is configured for the current git branch, commit messages in the editor or generated with the 'git commit -m' command-line switch will be prepended with the 'commitprefix' value enclosed in parentheses.  'issue' is any task-tracking (Jira, etc.) issue number associated with the branch.  It will be appended in its own paragraph to the end of the commit message.
