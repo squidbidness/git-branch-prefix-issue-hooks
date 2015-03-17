@@ -12,6 +12,9 @@ def config_description(config_key):
 def config_keys():
     return ["commitprefix", "issue"]
 
+# TODO: Replace this hard-coded list with a configurable set of keys in
+# .git/config, with a default set in a version-controlled file (probably factor
+# aliases-gitconfig into a more general config file to be included).
 def excluded_branch_regexes():
     return ["master", "trunk", "release_.*", "HEAD"]
 
