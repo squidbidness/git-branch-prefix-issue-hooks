@@ -31,11 +31,15 @@ When a new branch is created, the `post-checkout` hook will check if the new bra
 
 #### Convenince commands/aliases
 
-These hooks come with some convenience aliases for more easily querying and setting `commitprefix` and `issue`, in the file `aliases-gitconfig`.  These aliases need to be included in your git config file, either by manually copying-and pasting the file contents into .git/config, or preferrably by using git's [include] config key in .git/config (assuming your version of git supports it).  This way updates to `aliases-gitconfig` will be picked up automatically:
+These hooks come with some convenience aliases in the file `aliases-gitconfig`.  These aliases need to be included in your git config file, either by manually copying-and pasting the file contents into .git/config, or preferrably by using git's [include] config key in .git/config (assuming your version of git supports it).  This way updates to `aliases-gitconfig` will be picked up automatically:
 
 ```
 [include]
     path = hooks/aliases-gitconfig
 ```
 
-The resulting aliases are `git branch-commitprefix` and `git branch-issue`.  Use them without an argument to check the current value, or with an argument to set a new value, similar to how `git config` works.
+* `git branch-commitprefix` and `git branch-issue` make it more convenient to set or query `commitprefix` and `issue` for the current branch.  Use them without an argument to check the current value, or with an argument to set a new value, similar to how `git config` works.
+
+* `git branch-current` simply prints the name fo the current branch.
+
+* `git branch-upstream` prints the name of the branch the current branch is tracking, which will be used to inherit `commitprefix` and `issue` values.  Note that the tracking branch can be set using `git branch --set-upstream-to=<branch_name>`.
