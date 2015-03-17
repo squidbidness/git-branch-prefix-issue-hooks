@@ -1,7 +1,7 @@
 git-prefix-issue-hooks
 ======================
 
-Hooks and scripts for automatically preparing commit messages with a feature prefix and an issue number from the local branch config.
+##Hooks and scripts for automatically preparing commit messages with a feature prefix and an issue number from the local branch config.
 
 Place the files in your working directory's .git/hooks sub-directory.  You can do this by cloning the repository directly into that directory, then updates can be installed automatically with `git pull origin master`.
 
