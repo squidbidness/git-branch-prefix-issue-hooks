@@ -2,8 +2,6 @@ import sys
 import subprocess
 import re
 
-#TODO: Refactor prepare-commit-msg in terms of new functions in here
-#TODO: Add convenience commands such as 'git config-branch issue [...]'
 
 def config_description(config_key):
     return {
