@@ -1,9 +1,5 @@
 #!/usr/bin/python
 
-# TODO: augment to detect whether the prefix and/or issue are already in the
-# commit message (for example, in the case of amending a prior commit already
-# treated by this hook).
-
 from __future__ import print_function
 from hooks_common import *
 
