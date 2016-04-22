@@ -1,7 +1,9 @@
+import os
 import sys
-import subprocess
 import re
+import sh
 
+git = sh.git.bake(_tty_out=False)
 
 def config_description(config_key):
     return {
@@ -19,12 +21,15 @@ def excluded_branch_regexes():
     return ["master", "trunk", "release_.*", "HEAD"]
 
 def get_current_branch():
-    return subprocess.check_output(["git", "rev-parse", "--abbrev-ref", "HEAD"]).strip()
+    try:
+        return git("rev-parse", "--abbrev-ref", "HEAD").strip()
+    except sh.ErrorReturnCode:
+        return None
 
 def get_parent_branch(branch):
     try:
-        return subprocess.check_output(["git", "rev-parse", "--abbrev-ref", "{0}@{{u}}".format(branch)]).strip()
-    except subprocess.CalledProcessError:
+        return git("rev-parse", "--abbrev-ref", "{0}@{{u}}".format(branch)).strip()
+    except sh.ErrorReturnCode:
         return None
 
 def is_root_feature_branch(branch):
@@ -38,32 +43,20 @@ def is_excluded_branch(branch):
     return False
 
 def get_branch_config(branch, key):
-    return subprocess.check_output(["git",
-                                    "config",
-                                    "--get",
-                                    "branch.{0}.{1}".format(branch, key)]).strip()
+    return git.config( "--get", "branch.{0}.{1}".format(branch, key) ).strip()
 
 def get_all_branch_config(branch, key):
-    return subprocess.check_output(["git",
-                                    "config",
-                                    "--get-all",
-                                    "branch.{0}.{1}".format(branch, key)]
-                                  ).strip().split("\n")
+    return git.config( "--get-all", "branch.{0}.{1}".format(branch, key)
+            ).strip().split("\n")
 
 def set_branch_config(branch, key, value):
-    return subprocess.check_output(["git",
-                                    "config",
-                                    "branch.{0}.{1}".format(branch, key),
-                                    value]).strip()
+    return git.config( "branch.{0}.{1}".format(branch, key), value ).strip()
     # TODO: Fix bug here
 
 def has_branch_config(branch, key):
     try:
-        subprocess.check_output(["git",
-                                 "config",
-                                 "--get-all",
-                                 "branch.{0}.{1}".format(branch, key)]).strip()
-    except subprocess.CalledProcessError:
+        git.config( "--get-all", "branch.{0}.{1}".format(branch, key) ).strip()
+    except sh.ErrorReturnCode:
         return False
 
     return True
