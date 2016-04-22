@@ -22,10 +22,14 @@ def get_current_branch():
     return subprocess.check_output(["git", "rev-parse", "--abbrev-ref", "HEAD"]).strip()
 
 def get_parent_branch(branch):
-    return subprocess.check_output(["git", "rev-parse", "--abbrev-ref", "{0}@{{u}}".format(branch)]).strip()
+    try:
+        return subprocess.check_output(["git", "rev-parse", "--abbrev-ref", "{0}@{{u}}".format(branch)]).strip()
+    except subprocess.CalledProcessError:
+        return None
 
 def is_root_feature_branch(branch):
-    return is_excluded_branch(get_parent_branch(branch))
+    parent = get_parent_branch(branch)
+    return parent == None or is_excluded_branch(get_parent_branch(branch))
 
 def is_excluded_branch(branch):
     for r in excluded_branch_regexes():
