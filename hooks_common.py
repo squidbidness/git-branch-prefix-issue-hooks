@@ -37,6 +37,8 @@ def is_root_feature_branch(branch):
     return parent == None or is_excluded_branch(get_parent_branch(branch))
 
 def is_excluded_branch(branch):
+    if branch is None:
+        return False
     for r in excluded_branch_regexes():
         if re.match(r, branch) != None:
             return True
