@@ -1,4 +1,4 @@
-#!/usr/local/bin/python
+#!python
 
 from __future__ import print_function
 from hooks_common import *
